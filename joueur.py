@@ -1,5 +1,3 @@
-
-
 class Player:
     """Classe représentant un joueur."""
 
@@ -45,6 +43,7 @@ class Player:
         self.score -= points
         
     def extract():
+        raise NotImplementedError()
         
         
     def update_mask(self, coord, mask_piece):
