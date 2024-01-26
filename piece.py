@@ -34,9 +34,9 @@ class piece:
                     0 0 0 0 0
                     0 1 0 1 0  
         '''
-        self.masks = []
+        liste_masks = []
         
-        return self.masks
+        return liste_masks
 
 
 def charger_pieces() -> list[piece] :
