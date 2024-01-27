@@ -1,7 +1,7 @@
 import numpy as np
 from game import Blockus_state
 from piece import piece
-
+from joueur import Player
 class Blockus:
     '''
     Classe représentant le jeu Blockus
@@ -10,7 +10,7 @@ class Blockus:
     :param players: liste des joueurs
     :param pieces: liste des pieces
     '''
-    def __init__(self, width, height, players, pieces):
+    def __init__(self, width:int, height:int, players:list[Player], pieces:list[piece]):
         self.name = "Blockus"
         self.description = "Blockus est un jeu de stratégie pour 2 à 4 joueurs. \
                             Le but du jeu est de placer toutes ses pièces sur le plateau de jeu. \
