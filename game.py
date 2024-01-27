@@ -3,10 +3,15 @@ from game import Blockus_state
 from piece import piece
 
 class Blockus:
+    '''
+    Classe représentant le jeu Blockus
+    :param width: largeur du plateau de jeu
+    :param height: hauteur du plateau de jeu
+    :param players: liste des joueurs
+    :param pieces: liste des pieces
+    '''
     def __init__(self, width, height, players, pieces):
-        """ game name"""
         self.name = "Blockus"
-        """description du jeu avec les règles du jeux"""
         self.description = "Blockus est un jeu de stratégie pour 2 à 4 joueurs. \
                             Le but du jeu est de placer toutes ses pièces sur le plateau de jeu. \
                             Chaque pièce posée doit toucher un coin de la pièce déjà posée, \
@@ -35,9 +40,14 @@ class Blockus:
 
 class Blockus_state():
     '''
-        Classe représentant un état du jeu Blockus
+    Classe représentant un état du jeu Blockus
+    :param width: largeur du plateau de jeu
+    :param height: hauteur du plateau de jeu
+    :param player_pieces: liste des pieces de chacun des 2 joueurs
+    :param players_mask: masques des pieces de chacun des 2 des joueurs
+    :param player_turn: joueur dont c'est le tour de jouer
+    :param previous_state: etat precedent
     '''
-    
     def __init__(self, width, height, player_pieces, players_mask=None, player_turn=0, previous_state=None):
         self.width = width
         self.height = height
