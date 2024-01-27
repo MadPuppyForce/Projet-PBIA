@@ -16,7 +16,7 @@ class Blockus:
         self.players = players
         
         # initialisation du jeu
-        self.current_state = Blockus_state(width, height)
+        self.current_state = Blockus_state(width, height, [pieces.copy(), pieces.copy()])
     
     def play_turn(self):
         '''
@@ -37,23 +37,15 @@ class Blockus_state():
     '''
         Classe représentant un état du jeu Blockus
     '''
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.players_mask = [np.zeros((height+2, width+2), dtype=bool), np.zeros((height+2, width+2), dtype=bool)]
-        self.player_pieces = [[], []]
-        self.player_turn = 0
-        self.previous_state = self
-        self._mask_board = None
-        self._next_states = None
     
-    def __init__(self, width, height, players_mask, player_pieces, player_turn, previous_state):
+    def __init__(self, width, height, player_pieces, players_mask=None, player_turn=0, previous_state=None):
         self.width = width
         self.height = height
-        self.players_mask = players_mask
         self.player_pieces = player_pieces
+        self.players_mask = ([np.zeros((height+2, width+2), dtype=bool), np.zeros((height+2, width+2), dtype=bool)] 
+                        if players_mask == None else players_mask)
         self.player_turn = player_turn
-        self.previous_state = previous_state
+        self.previous_state = previous_state if previous_state != None else self
         self._next_states = None
         self._mask_board = None
     
