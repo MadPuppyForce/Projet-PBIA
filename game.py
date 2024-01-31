@@ -2,6 +2,7 @@ import numpy as np
 from game import Blockus_state
 from piece import piece
 from joueur import Player
+
 class Blockus:
     '''
     Classe représentant le jeu Blockus

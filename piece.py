@@ -16,23 +16,23 @@ class piece:
         Chaque element correspond a un mask de la piece dans une orientation differente.
             - liste de tuple (mask_piece, mask_piece_adj, mask_piece_diag)
             
-            Exemple d'element de la liste pour une piece de taille 3x3 en forme de L :
+            Exemple d'element de la liste pour une piece de taille 3x2 en forme de L :
                 - le masque de la piece :
-                      1 1 0
-                      0 1 0
-                      0 1 0
+                      1 1
+                      0 1
+                      0 1
                 - le masque des cases adjacentes a la piece :
-                    0 1 1 0 0
-                    1 0 0 1 0
-                    0 1 0 1 0
-                    0 1 0 1 0
-                    0 0 1 0 0
+                    0 1 1 0
+                    1 0 0 1
+                    0 1 0 1
+                    0 1 0 1
+                    0 0 1 0
                 - le masque des cases diagonales a la piece :
-                    1 0 0 1 0
-                    0 0 0 0 0
-                    1 0 0 0 0
-                    0 0 0 0 0
-                    0 1 0 1 0  
+                    1 0 0 1
+                    0 0 0 0
+                    1 0 0 0
+                    0 0 0 0
+                    0 1 0 1
         '''
         liste_masks = []
         
