@@ -58,8 +58,6 @@ class Blockus_state():
         if players_mask == None: # initialisation des masques des joueurs si non fournis
             self.players_mask = [np.zeros((height+2, width+2), dtype=bool), np.zeros((height+2, width+2), dtype=bool)]
             self.players_mask[0][ 0, 0] = True
-            self.players_mask[0][ 0,-1] = True
-            self.players_mask[1][-1, 0] = True
             self.players_mask[1][-1,-1] = True
         else:
             self.players_mask = players_mask
