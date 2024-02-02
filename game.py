@@ -53,12 +53,22 @@ class Blockus_state():
         self.width = width
         self.height = height
         self.player_pieces = player_pieces
-        self.players_mask = ([np.zeros((height+2, width+2), dtype=bool), np.zeros((height+2, width+2), dtype=bool)] 
-                        if players_mask == None else players_mask)
+        
+        # initialisation des masques des joueurs
+        if players_mask == None: # initialisation des masques des joueurs si non fournis
+            self.players_mask = [np.zeros((height+2, width+2), dtype=bool), np.zeros((height+2, width+2), dtype=bool)]
+            self.players_mask[0][ 0, 0] = True
+            self.players_mask[0][ 0,-1] = True
+            self.players_mask[1][-1, 0] = True
+            self.players_mask[1][-1,-1] = True
+        else:
+            self.players_mask = players_mask
+            
         self.player_turn = player_turn
         self.previous_state = previous_state if previous_state != None else self
         self._next_states = None
         self._mask_board = None
+        self._nb_coups = None
     
     @property
     def mask_board(self) -> np.array:
@@ -79,6 +89,16 @@ class Blockus_state():
     @next_states.setter
     def next_states(self, value):
         raise AttributeError("You can't set attribute next_states")      
+    
+    @property
+    def nb_coups(self) -> int:
+        if self._next_states == None:
+            self._next_states = self.__compute_next_states()
+        return self._nb_coups
+    
+    @nb_coups.setter
+    def next_states(self, value):
+        raise AttributeError("You can't set attribute next_states")  
     
     def __get_next_state(self, piece:piece, mask_piece, coord) -> Blockus_state:
         '''
@@ -116,8 +136,17 @@ class Blockus_state():
                 for j in range(self.width - w_mask):
                     for i in range(self.height - h_mask):
                         if self.__is_valid(masks, (i, j)):
-                            next_states.append(self.__get_next_state(piece, masks[0], (i, j)))
-                            
+                            next_state = self.__get_next_state(piece, masks[0], (i, j))
+                            next_states.append(next_state)
+        
+        self._nb_coups = len(next_states)
+        
+        # si aucun coup possible, on passe le tour
+        if self._nb_coups == 0:
+            next_player_turn = 0 if self.player_turn == 1 else 1
+            next_state = Blockus_state(self.width, self.height, self.players_mask, self.player_pieces, next_player_turn, self)
+            next_states.append(next_state)
+        
         return next_states
     
     def __is_valid(self, masks, coord) -> bool:
@@ -131,6 +160,7 @@ class Blockus_state():
         mask_pieces_current_player = self.players_mask[self.player_turn]
         mask_piece, mask_piece_adj, mask_piece_diag = masks
         h_mask, w_mask = mask_piece.shape
+        
         # verification que les cases sont libres
         if np.any(mask_board[1+i:1+i+h_mask, 1+j:1+j+w_mask] & mask_piece):
             return False
@@ -146,4 +176,4 @@ class Blockus_state():
         return True
     
     def is_final(self) -> bool:
-        return self.previous_state.get_next_states() == [] and self.get_next_states() == []
+        return self.previous_state.nb_coups == 0 and self.nb_coups == 0
