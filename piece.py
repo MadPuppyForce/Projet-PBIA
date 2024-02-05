@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class piece:
     '''Classe représentant une piece.'''
     
@@ -10,7 +11,7 @@ class piece:
         '''
         self.liste_masks = self.initialiser_liste_masks(mask)
     
-    def initialiser_liste_masks(self,mask):
+    def initialiser_liste_masks(self,mask,file_path):
         '''
         Initialise la liste des masks de la piece. 
         Chaque element correspond a un mask de la piece dans une orientation differente.
@@ -39,10 +40,41 @@ class piece:
         return liste_masks
 
 
-def charger_pieces() -> list[piece] :
+def charger_pieces(file_path) -> np.ndarray :
     '''
-    Charge les pieces du jeu Blockus a partir de fichiers
+    Charge une pièce du jeu Blockus a partir de fichiers
     '''
-    pieces = []
+    try:
+        piece = np.loadtxt(file_path)
+        """ just in case lol"""
+        piece = piece.astype(int)
+        return piece
+    except Exception as e:
+        print("Erreur lors du chargement des pieces : ", e)
+        return None
+
+def generer_config(piece) -> list:
     
-    return pieces
+    rotations = [np.rot90(piece, k=i) for i in range(4)]
+    flipped_rotations = [np.flip(rot,0) for rot in rotations]
+    configs_ar= rotations + flipped_rotations
+    configs=[arr.tolist() for arr in configs_ar]
+    config_unique= []
+    for config in configs:
+        if not any(np.array_equal(config, unique) for unique in config_unique):
+            config_unique.append(config)
+    
+    return config_unique
+    #return type(configs)
+    
+def generer_adj(piece) -> np.ndarray:
+    '''
+    Genere le masque des cases adjacentes a la piece
+    '''
+    piece = np.array(piece)
+    piece_pad= np.array(np.pad(piece, 1, mode='constant', constant_values=1),dtype=bool)
+    piece_pad=np.invert(piece_pad)
+
+
+    return piece_pad
+ 
