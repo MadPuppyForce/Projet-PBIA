@@ -1,53 +1,16 @@
 import numpy as np
-from game import Blockus_state
-from piece import piece
-from joueur import Player
+from __future__ import annotations
+from blockus.piece import piece
 
-class Blockus:
-    '''
-    Classe représentant le jeu Blockus
-    :param width: largeur du plateau de jeu
-    :param height: hauteur du plateau de jeu
-    :param players: liste des joueurs
-    :param pieces: liste des pieces
-    '''
-    def __init__(self, width:int, height:int, players:list[Player], pieces:list[piece]):
-        self.name = "Blockus"
-        self.description = "Blockus est un jeu de stratégie pour 2 à 4 joueurs. \
-                            Le but du jeu est de placer toutes ses pièces sur le plateau de jeu. \
-                            Chaque pièce posée doit toucher un coin de la pièce déjà posée, \
-                            mais seulement par les coins. Les côtés des pièces de même couleur \
-                            ne peuvent pas se toucher. Les pièces de même couleur peuvent se toucher par les côtés."
-        
-        self.players = players
-        
-        # initialisation du jeu
-        self.current_state = Blockus_state(width, height, [pieces.copy(), pieces.copy()])
-    
-    def play_turn(self):
-        '''
-        Joue un tour de jeu
-        '''
-        current_player = self.players[self.current_state.player_turn]
-        ind_coup = current_player.play(self.current_state)
-        self.current_state = self.current_state.next_states[ind_coup]
-    
-    def reset(self):
-        '''
-        Reinitialise le jeu
-        '''
-        self.current_state = Blockus_state(self.current_state.width, self.current_state.height)
-
-
-class Blockus_state():
+class blockus_state():
     '''
     Classe représentant un état du jeu Blockus
-    :param width: largeur du plateau de jeu
-    :param height: hauteur du plateau de jeu
-    :param player_pieces: liste des pieces de chacun des 2 joueurs
-    :param players_mask: masques des pieces de chacun des 2 des joueurs
-    :param player_turn: joueur dont c'est le tour de jouer
-    :param previous_state: etat precedent
+        :param width: largeur du plateau de jeu
+        :param height: hauteur du plateau de jeu
+        :param player_pieces: liste des pieces de chacun des 2 joueurs
+        :param players_mask: masques des pieces de chacun des 2 des joueurs
+        :param player_turn: joueur dont c'est le tour de jouer
+        :param previous_state: etat precedent
     '''
     def __init__(self, width, height, player_pieces, players_mask=None, player_turn=0, previous_state=None):
         self.width = width
@@ -98,7 +61,7 @@ class Blockus_state():
     def next_states(self, value):
         raise AttributeError("You can't set attribute next_states")  
     
-    def __get_next_state(self, piece:piece, mask_piece, coord) -> Blockus_state:
+    def __get_next_state(self, piece:piece, mask_piece, coord) -> blockus_state:
         '''
         Retourne le nouvel etat du jeu apres avoir joue la piece aux coordonnees donnees
         '''
@@ -118,7 +81,7 @@ class Blockus_state():
         next_player_pieces[current_player].remove(piece)
         
         # creation du nouvel etat
-        next_state = Blockus_state(self.width, self.height, next_players_mask, next_player_pieces, next_player_turn, self)
+        next_state = blockus_state(self.width, self.height, next_players_mask, next_player_pieces, next_player_turn, self)
         
         return next_state
         
@@ -142,7 +105,7 @@ class Blockus_state():
         # si aucun coup possible, on passe le tour
         if self._nb_coups == 0:
             next_player_turn = 0 if self.player_turn == 1 else 1
-            next_state = Blockus_state(self.width, self.height, self.players_mask, self.player_pieces, next_player_turn, self)
+            next_state = blockus_state(self.width, self.height, self.players_mask, self.player_pieces, next_player_turn, self)
             next_states.append(next_state)
         
         return next_states
