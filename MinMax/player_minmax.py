@@ -26,7 +26,7 @@ class player_MinMax(player):
         return eval
     
     
-    def MaxValue(self, state: blockus_state, depth: int) -> int:
+    def MaxValue(self, state: blockus_state, depth: int, alpha: int, beta: int) -> int:
         '''
         Fonction MaxValue de l'algorithme MinMax.
         Récupérer la valeur maximale pour un noeud.
@@ -39,11 +39,13 @@ class player_MinMax(player):
         value = -float('inf')
         
         for possible_move in next_states:
-            value = max(value, self.MinValue(possible_move, depth - 1))
-        
+            value = max(value, self.MinValue(possible_move, depth - 1, alpha, beta))
+            alpha = max(alpha, value)
+            if beta <= alpha:
+                break
         return value
     
-    def MinValue(self, state: blockus_state, depth: int) -> int:
+    def MinValue(self, state: blockus_state, depth: int, alpha: int, beta: int) -> int:
         '''
         Fonction MinValue de l'algorithme MinMax.
         Récupérer la valeur minimale pour un noeud.
@@ -56,25 +58,29 @@ class player_MinMax(player):
         value = float('inf')
         
         for possible_move in next_states:
-            value = min(value, self.MaxValue(possible_move, depth - 1))
-        
+            value = min(value, self.MaxValue(possible_move, depth - 1, alpha, beta))
+            beta = min(beta, value)
         return value
     
-    def MinMaxPlay(self, state: blockus_state) -> int:
+    def play(self, state: blockus_state) -> int:
         '''
         Fonction de décision de l'algorithme MinMax.
         Récupérer le meilleur coup à jouer.
-        Ne contient pas l'élagage alpha-beta.
+        Contient l'élagage alpha-beta.
         '''
         next_states = state.next_states()
         value = -float('inf')
         ind_coup = 0
         
+        alpha = -float('inf')
+        beta = float('inf')
+        
         for i, possible_move in enumerate(next_states):
-            min_value = self.MinValue(possible_move, self.depth)
+            min_value = self.MinValue(possible_move, self.depth, alpha, beta)
             if min_value > value:
                 value = min_value
                 ind_coup = i
         
         return ind_coup
+    
     
