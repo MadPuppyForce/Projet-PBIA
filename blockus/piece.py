@@ -10,7 +10,16 @@ class piece:
         '''
         self.liste_masks = self.initialiser_liste_masks(mask)
     
-    def initialiser_liste_masks(self,mask,file_path):
+    def initialiser_liste_masks(self,file_path):
+        
+        piece=charger_pieces(file_path)
+        config=__generer_config(piece)
+        liste_masks=[]
+        for choice in config:
+            mask_piece = choice
+            mask_piece_adj = __generer_adj(choice)
+            mask_piece_diag = __generer_diag(choice)
+            liste_masks.append((mask_piece, mask_piece_adj, mask_piece_diag))
         '''
         Initialise la liste des masks de la piece. 
         Chaque element correspond a un mask de la piece dans une orientation differente.
@@ -34,11 +43,10 @@ class piece:
                     0 0 0 0
                     0 1 0 1
         '''
-        liste_masks = []
         
         return liste_masks
     
-    def __generer_config(piece) -> list:
+def __generer_config(piece) -> list:
         
         rotations = [np.rot90(piece, k=i) for i in range(4)]
         flipped_rotations = [np.flip(rot,0) for rot in rotations]
@@ -52,15 +60,53 @@ class piece:
         return config_unique
         #return type(configs)
         
-    def __generer_adj(piece) -> np.ndarray:
+def __generer_adj(piece) -> np.ndarray:
         '''
         Genere le masque des cases adjacentes a la piece
         '''
         piece = np.array(piece)
-        piece_pad= np.array(np.pad(piece, 1, mode='constant', constant_values=1),dtype=bool)
-        piece_pad=np.invert(piece_pad)
+        piece_pad= np.array(np.pad(piece, 1, mode='constant', constant_values=0),dtype=int)
+
+
+
+        #gauche
+        piece_pad[1:1+len(piece),0:len(piece[0])] |= piece
+        #droite
+        piece_pad[1:1+len(piece),2:2+len(piece[0])] |= piece
+        #haut
+        piece_pad[0:len(piece),1:1+len(piece[0])] |= piece
+        #bas
+        piece_pad[2:2+len(piece),1:1+len(piece[0])] |= piece
+
+        #enlever la piece initiale
+        piece_pad[1:len(piece)+1,1:len(piece[0])+1]^= piece
+   
 
         return piece_pad
+def __generer_diag(piece) -> np.ndarray:
+        '''
+        Genere le masque des cases diagonales a la piece
+        '''
+        piece = np.array(piece)
+        piece_pad= np.array(np.pad(piece, 1, mode='constant', constant_values=0),dtype=int)
+        adj = __generer_adj(piece)
+
+        #haut gauche
+        piece_pad[0:len(piece),0:len(piece[0])] |= piece
+        #haut droite
+        piece_pad[0:len(piece),2:2+len(piece[0])] |= piece
+        #bas gauche
+        piece_pad[2:2+len(piece),0:len(piece[0])] |= piece
+        #bas droite
+        piece_pad[2:2+len(piece),2:2+len(piece[0])] |= piece
+
+        #enlever la piece initiale
+        piece_pad[1:len(piece)+1,1:len(piece[0])+1]^= piece
+
+        #enlever les cases adjacentes
+        piece_pad=piece_pad & np.invert(adj)
+
+        return piece_pad    
 
 def charger_pieces(file_path) -> np.ndarray :
     '''
