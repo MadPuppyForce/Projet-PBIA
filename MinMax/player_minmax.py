@@ -19,8 +19,8 @@ class player_MinMax(player):
         current_player_pieces = state.player_pieces[state.player_turn]
         for piece in current_player_pieces:
             for masks in piece.liste_masks:
-                nb_cube = sum(sum(row) for row in masks[0]) # nombre de cases occupées par la pièce
-                nb_diag = sum(sum(row) for row in masks[2]) # nombre de possibilités de placement d'une prochaine pièce
+                nb_cube = np.sum(masks[0])  # nombre de cases occupées par la pièce
+                nb_diag = np.sum(masks[2])  # nombre de possibilités de placement d'une prochaine pièce 
                 eval = eval - nb_cube - nb_diag
                 
         return eval
@@ -36,7 +36,7 @@ class player_MinMax(player):
         if state.is_terminal() or depth == 0:
             return self.state_evaluation(state)
         
-        value = -float('inf')
+        value = -2147483647
         
         for possible_move in next_states:
             value = max(value, self.MinValue(possible_move, depth - 1, alpha, beta))
@@ -55,7 +55,7 @@ class player_MinMax(player):
         if state.is_terminal() or depth == 0:
             return self.state_evaluation(state)
         
-        value = float('inf')
+        value = 2147483647
         
         for possible_move in next_states:
             value = min(value, self.MaxValue(possible_move, depth - 1, alpha, beta))
@@ -72,8 +72,8 @@ class player_MinMax(player):
         value = -float('inf')
         ind_coup = 0
         
-        alpha = -float('inf')
-        beta = float('inf')
+        alpha = -2147483647
+        beta = 2147483647
         
         for i, possible_move in enumerate(next_states):
             min_value = self.MinValue(possible_move, self.depth, alpha, beta)

@@ -76,4 +76,3 @@ def charger_pieces(file_path) -> np.ndarray :
         return None
 
 
- 
