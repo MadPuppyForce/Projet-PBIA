@@ -1,5 +1,5 @@
-import numpy as np
 from __future__ import annotations
+import numpy as np
 from blockus.piece import piece
 
 class blockus_state():
