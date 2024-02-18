@@ -138,3 +138,11 @@ class blockus_state():
     
     def is_final(self) -> bool:
         return self.previous_state.nb_coups == 0 and self.nb_coups == 0
+    
+    def result(self) -> int:
+        '''
+        Retourne le resultat du jeu : 1 si le joueur 1 a gagne, -1 si le joueur 2 a gagne, 0 sinon
+        '''
+        score = np.sum(self.players_mask[0]) - np.sum(self.players_mask[1])
+        
+        return 1 if score > 0 else -1 if score < 0 else 0
