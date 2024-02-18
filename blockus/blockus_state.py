@@ -102,8 +102,8 @@ class blockus_state():
         
         self._nb_coups = len(next_states)
         
-        # si aucun coup possible, on passe le tour
-        if self._nb_coups == 0:
+        # si aucun coup possible et que le jeu n'est pas fini, on passe le tour du joueur courant
+        if self._nb_coups == 0 and self.previous_state.nb_coups != 0:
             next_player_turn = 0 if self.player_turn == 1 else 1
             next_state = blockus_state(self.width, self.height, self.players_mask, self.player_pieces, next_player_turn, self)
             next_states.append(next_state)
