@@ -2,24 +2,14 @@ import numpy as np
 
 class piece:
     '''Classe représentant une piece.'''
-    
-    def _init_(self, mask):
+    def __init__(self, mask):
         '''
         Constructeur de la classe piece.
             - mask : mask de la piece provenant du fichier .txt
         '''
         self.liste_masks = self.initialiser_liste_masks(mask)
     
-    def initialiser_liste_masks(self,file_path):
-        
-        piece=charger_pieces(file_path)
-        config=__generer_config(piece)
-        liste_masks=[]
-        for choice in config:
-            mask_piece = choice
-            mask_piece_adj = __generer_adj(choice)
-            mask_piece_diag = __generer_diag(choice)
-            liste_masks.append((mask_piece, mask_piece_adj, mask_piece_diag))
+    def initialiser_liste_masks(self, mask):
         '''
         Initialise la liste des masks de la piece. 
         Chaque element correspond a un mask de la piece dans une orientation differente.
@@ -44,81 +34,83 @@ class piece:
                     0 1 0 1
         '''
         
+        config = self.__generer_config(mask)
+        liste_masks=[]
+        for choice in config:
+            mask_piece      = choice
+            mask_piece_adj  = self.__generer_adj(choice)
+            mask_piece_diag = self.__generer_diag(choice, mask_piece_adj)
+            liste_masks.append((mask_piece, mask_piece_adj, mask_piece_diag))
         return liste_masks
     
-def __generer_config(piece) -> list:
-        
-        rotations = [np.rot90(piece, k=i) for i in range(4)]
+    def __generer_config(self,mask) -> list:
+        rotations = [np.rot90(mask, k=i) for i in range(4)]
         flipped_rotations = [np.flip(rot,0) for rot in rotations]
-        configs_ar= rotations + flipped_rotations
-        configs=[arr.tolist() for arr in configs_ar]
+        configs = rotations + flipped_rotations
         config_unique= []
         for config in configs:
             if not any(np.array_equal(config, unique) for unique in config_unique):
                 config_unique.append(config)
         
         return config_unique
-        #return type(configs)
-        
-def __generer_adj(piece) -> np.ndarray:
+            
+    def __generer_adj(self,piece) -> np.ndarray:
         '''
         Genere le masque des cases adjacentes a la piece
+        a partir du masque de base
         '''
-        piece = np.array(piece)
-        piece_pad= np.array(np.pad(piece, 1, mode='constant', constant_values=0),dtype=int)
+        h, w = piece.shape
+        adj = np.zeros((h+2,w+2),dtype=bool)
 
+        # gauche
+        adj[1:1+len(piece),  0:len(piece[0])] |= piece
+        # droite
+        adj[1:1+len(piece),2:2+len(piece[0])] |= piece
+        # haut
+        adj[  0:len(piece),1:1+len(piece[0])] |= piece
+        # bas
+        adj[2:2+len(piece),1:1+len(piece[0])] |= piece
 
+        # enlever la piece initiale
+        adj[1:len(piece)+1,1:len(piece[0])+1] ^= piece
 
-        #gauche
-        piece_pad[1:1+len(piece),0:len(piece[0])] |= piece
-        #droite
-        piece_pad[1:1+len(piece),2:2+len(piece[0])] |= piece
-        #haut
-        piece_pad[0:len(piece),1:1+len(piece[0])] |= piece
-        #bas
-        piece_pad[2:2+len(piece),1:1+len(piece[0])] |= piece
-
-        #enlever la piece initiale
-        piece_pad[1:len(piece)+1,1:len(piece[0])+1]^= piece
-   
-
-        return piece_pad
-def __generer_diag(piece) -> np.ndarray:
+        return adj
+        
+    def __generer_diag(self,piece, adj) -> np.ndarray:
         '''
         Genere le masque des cases diagonales a la piece
+        a partir du masque de base et du masque des cases adjacentes
         '''
-        piece = np.array(piece)
-        piece_pad= np.array(np.pad(piece, 1, mode='constant', constant_values=0),dtype=int)
-        adj = __generer_adj(piece)
+        h, w = piece.shape
+        diag = np.zeros((h+2,w+2),dtype=bool)
 
-        #haut gauche
-        piece_pad[0:len(piece),0:len(piece[0])] |= piece
-        #haut droite
-        piece_pad[0:len(piece),2:2+len(piece[0])] |= piece
-        #bas gauche
-        piece_pad[2:2+len(piece),0:len(piece[0])] |= piece
-        #bas droite
-        piece_pad[2:2+len(piece),2:2+len(piece[0])] |= piece
+        # haut gauche
+        diag[  0:h,  0:w] |= piece
+        # haut droite
+        diag[  0:h,2:2+w] |= piece
+        # bas gauche
+        diag[2:2+h,  0:w] |= piece
+        # bas droite
+        diag[2:2+h,2:2+w] |= piece
 
         #enlever la piece initiale
-        piece_pad[1:len(piece)+1,1:len(piece[0])+1]^= piece
+        diag[1:h+1,1:w+1] ^= piece
 
         #enlever les cases adjacentes
-        piece_pad=piece_pad & np.invert(adj)
+        diag = diag & ~adj
 
-        return piece_pad    
+        return diag
 
-def charger_pieces(file_path) -> np.ndarray :
+def charger_piece(file_path) -> np.ndarray :
     '''
     Charge une pièce du jeu Blockus a partir de fichiers
     '''
-    try:
-        piece = np.loadtxt(file_path)
-        """ just in case lol"""
-        piece = piece.astype(int)
-        return piece
-    except Exception as e:
-        print("Erreur lors du chargement des pieces : ", e)
-        return None
+    mask = np.loadtxt(file_path, dtype=bool)
+    if mask.ndim == 0:
+        mask = mask[np.newaxis, np.newaxis]
+    if mask.ndim == 1:
+        mask = mask[np.newaxis, :]
+    p = piece(mask)
+    return p
 
 

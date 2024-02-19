@@ -1,6 +1,7 @@
 import numpy as np
 import random
-from blockus import player, blockus_state
+from blockus import blockus_state
+from blockus.joueur import player
 from __future__ import annotations
 class player_MonteCarlo(player):
     '''

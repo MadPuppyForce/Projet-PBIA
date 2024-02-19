@@ -20,6 +20,6 @@ class player_random(player):
         pass
     
     def play(self, state: blockus_state) -> blockus_state:
-        next_states = state.next_states()
+        next_states = state.next_states
         next_state = next_states[np.random.randint(len(next_states))]
         return next_state

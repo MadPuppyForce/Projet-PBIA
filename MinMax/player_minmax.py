@@ -1,4 +1,5 @@
-from blockus import player, blockus_state
+from blockus import blockus_state
+from blockus.joueur import player
 import numpy as np
 
 class player_MinMax(player):

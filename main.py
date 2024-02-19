@@ -1,4 +1,4 @@
-from blockus import blockus_state, piece, blockus, joueur
+from blockus import piece, blockus, joueur
 import numpy as np
 import os
 
@@ -15,36 +15,46 @@ Initialisation du blockus
 
 # Création des pièces
 pieces = []
-
 for file in os.listdir("pieces"):
-    if file.endswith(".txt"):
-        pieces.append(piece.charger_pieces(file))
+    pieces.append(piece.charger_piece("pieces/" + file))
 
 
-# Création des joueurs
-
-#nb_players = 2   #nombre de joueurs (de 2 à 4)
+# creation des joueurs
 player1 = joueur.player_random()
 player2 = joueur.player_random()
 
 players = [player1, player2]
 
 
-# Création du plateau de jeu
-
+# creation du plateau de jeu
 game = blockus(WIDTH,HEIGHT,players,pieces)
 
 
 '''
 Tour de jeu
 '''
-
+turn = 0
 while not game.current_state.is_final():
     # Affichage de l'état du jeu
+    turn += 1
+    nb_pieces_j1 = len(game.current_state.player_pieces[0])
+    nb_pieces_j2 = len(game.current_state.player_pieces[1])
+    print("\nTour ", turn, " - Joueur ", game.current_state.player_turn + 1)
+    print("Nombre de pièces restantes : j1 -> ", nb_pieces_j1, " / j2 -> ", nb_pieces_j2)
     print(game.current_state)
-    game.play_turn()
     
+    # Jouer un tour
+    game.play_turn()
+
+# Affichage de l'état final du jeu
+turn += 1
+nb_pieces_j1 = len(game.current_state.player_pieces[0])
+nb_pieces_j2 = len(game.current_state.player_pieces[1])
+print("\nTour ", turn, " - Joueur ", game.current_state.player_turn + 1)
+print("Nombre de pièces restantes : j1 -> ", nb_pieces_j1, " / j2 -> ", nb_pieces_j2)
+print(game.current_state)
+
 
 # Calcul du score
-score = blockus.current_state.score()
+score = game.current_state.result()
 print("Score final : ", score)

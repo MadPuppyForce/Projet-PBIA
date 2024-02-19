@@ -1,7 +1,7 @@
 from __future__ import annotations
 import numpy as np
 from blockus.piece import piece
-
+from copy import deepcopy
 class blockus_state():
     '''
     Classe représentant un état du jeu Blockus
@@ -12,7 +12,7 @@ class blockus_state():
         :param player_turn: joueur dont c'est le tour de jouer
         :param previous_state: etat precedent
     '''
-    def __init__(self, width, height, player_pieces, players_mask=None, player_turn=0, previous_state=None):
+    def __init__(self, width, height, player_pieces:list[piece], players_mask=None, player_turn=0, previous_state=None):
         self.width = width
         self.height = height
         self.player_pieces = player_pieces
@@ -33,7 +33,7 @@ class blockus_state():
     
     @property
     def mask_board(self) -> np.array:
-        if self._mask_board == None:
+        if self._mask_board is None:
             self._mask_board = self.players_mask[0] | self.players_mask[1]
         return self._mask_board
     
@@ -43,7 +43,7 @@ class blockus_state():
     
     @property
     def next_states(self) -> list:
-        if self._next_states == None:
+        if self._next_states is None:
             self._next_states = self.__compute_next_states()
         return self._next_states
     
@@ -58,7 +58,7 @@ class blockus_state():
         return self._nb_coups
     
     @nb_coups.setter
-    def next_states(self, value):
+    def nb_coups(self, value):
         raise AttributeError("You can't set attribute next_states")  
     
     def __get_next_state(self, piece:piece, mask_piece, coord) -> blockus_state:
@@ -73,7 +73,7 @@ class blockus_state():
         next_player_turn = 0 if current_player == 1 else 1
         
         # mise a jour des masques
-        next_players_mask = self.players_mask.deepcopy()
+        next_players_mask = deepcopy(self.players_mask)
         next_players_mask[current_player][1+i:1+i+h_mask, 1+j:1+j+w_mask] |= mask_piece
         
         # mise a jour des pieces
@@ -81,7 +81,7 @@ class blockus_state():
         next_player_pieces[current_player].remove(piece)
         
         # creation du nouvel etat
-        next_state = blockus_state(self.width, self.height, next_players_mask, next_player_pieces, next_player_turn, self)
+        next_state = blockus_state(self.width, self.height, next_player_pieces, next_players_mask, next_player_turn, self)
         
         return next_state
         
@@ -93,9 +93,9 @@ class blockus_state():
         current_player_pieces = self.player_pieces[self.player_turn]
         for piece in current_player_pieces:
             for masks in piece.liste_masks:
-                w_mask, h_mask = masks[0].shape
-                for j in range(self.width - w_mask):
-                    for i in range(self.height - h_mask):
+                h_mask, w_mask = masks[0].shape
+                for j in range(self.width - w_mask + 1):
+                    for i in range(self.height - h_mask + 1):
                         if self.__is_valid(masks, (i, j)):
                             next_state = self.__get_next_state(piece, masks[0], (i, j))
                             next_states.append(next_state)
@@ -105,7 +105,7 @@ class blockus_state():
         # si aucun coup possible et que le jeu n'est pas fini, on passe le tour du joueur courant
         if self._nb_coups == 0 and self.previous_state.nb_coups != 0:
             next_player_turn = 0 if self.player_turn == 1 else 1
-            next_state = blockus_state(self.width, self.height, self.players_mask, self.player_pieces, next_player_turn, self)
+            next_state = blockus_state(self.width, self.height, self.player_pieces, self.players_mask, next_player_turn, self)
             next_states.append(next_state)
         
         return next_states
@@ -148,9 +148,9 @@ class blockus_state():
         return 1 if score > 0 else -1 if score < 0 else 0
     
     def __str__(self) -> str:
-        J1_CHAR = 'X'
-        J2_CHAR = 'O'
-        EMPTY_CHAR = '.'
+        J1_CHAR = '\u2588\u2588'
+        J2_CHAR = '\u2592\u2592'
+        EMPTY_CHAR = '\u257A\u2578'
         
         board = np.full((self.height, self.width), EMPTY_CHAR)
         board[self.players_mask[0][1:-1, 1:-1]] = J1_CHAR

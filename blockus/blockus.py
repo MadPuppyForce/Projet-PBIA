@@ -1,7 +1,7 @@
 import numpy as np
-from blockus import blockus_state
+from blockus.blockus_state import blockus_state
 from blockus.piece import piece
-from blockus import player
+from blockus.joueur import player
 
 class blockus:
     '''
@@ -29,8 +29,8 @@ class blockus:
         Joue un tour de jeu
         '''
         current_player = self.players[self.current_state.player_turn]
-        ind_coup = current_player.play(self.current_state)
-        self.current_state = self.current_state.next_states[ind_coup]
+        next_state = current_player.play(self.current_state)
+        self.current_state = next_state
     
     def reset(self):
         '''
