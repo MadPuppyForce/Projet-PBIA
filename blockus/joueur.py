@@ -8,7 +8,7 @@ class player():
     def __init__(self):
         pass
     
-    def play(self, state: blockus_state) -> int:
+    def play(self, state: blockus_state) -> blockus_state:
         raise NotImplementedError("Please Implement this method")
 
 
@@ -19,7 +19,7 @@ class player_random(player):
     def __init__(self):
         pass
     
-    def play(self, state: blockus_state) -> int:
+    def play(self, state: blockus_state) -> blockus_state:
         next_states = state.next_states()
-        ind_coup = np.random.randint(len(next_states))
-        return ind_coup
+        next_state = next_states[np.random.randint(len(next_states))]
+        return next_state
