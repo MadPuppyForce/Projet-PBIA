@@ -146,3 +146,19 @@ class blockus_state():
         score = np.sum(self.players_mask[0]) - np.sum(self.players_mask[1])
         
         return 1 if score > 0 else -1 if score < 0 else 0
+    
+    def __str__(self) -> str:
+        J1_CHAR = 'X'
+        J2_CHAR = 'O'
+        EMPTY_CHAR = '.'
+        
+        board = np.full((self.height, self.width), EMPTY_CHAR)
+        board[self.players_mask[0][1:-1, 1:-1]] = J1_CHAR
+        board[self.players_mask[1][1:-1, 1:-1]] = J2_CHAR
+        
+        str_board = ''
+        for i in range(self.height):
+            str_board += ''.join(board[i]) + '\n'
+        
+        return str_board
+        
