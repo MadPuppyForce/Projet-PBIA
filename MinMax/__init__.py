@@ -1,1 +1,1 @@
-from player_minmax import player_MinMax
+from MinMax.player_MinMax import player_MinMax

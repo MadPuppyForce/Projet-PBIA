@@ -53,13 +53,16 @@ class blockus_state():
     
     @property
     def nb_coups(self) -> int:
-        if self._next_states == None:
+        if self._nb_coups is None:
             self._next_states = self.__compute_next_states()
         return self._nb_coups
     
     @nb_coups.setter
     def nb_coups(self, value):
         raise AttributeError("You can't set attribute next_states")  
+    
+    def forge_next_states(self):
+        self._next_states = None
     
     def __get_next_state(self, piece:piece, mask_piece, coord) -> blockus_state:
         '''

@@ -1,12 +1,14 @@
 from blockus import piece, blockus, joueur
+from MinMax import player_MinMax, heuristics
+from MonteCarlo import player_MonteCarlo
 import numpy as np
 import os
 
 '''
 Constantes
 '''
-WIDTH = 20  # largeur du plateau de jeu
-HEIGHT = 20 # hauteur du plateau de jeu
+WIDTH = 10  # largeur du plateau de jeu
+HEIGHT = 10 # hauteur du plateau de jeu
 
 
 '''
@@ -20,7 +22,8 @@ for file in os.listdir("pieces"):
 
 
 # creation des joueurs
-player1 = joueur.player_random()
+# player1 = joueur.player_random()
+player1 = player_MinMax(3, heuristics.heuristicV1)
 player2 = joueur.player_random()
 
 players = [player1, player2]

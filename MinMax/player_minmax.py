@@ -1,5 +1,6 @@
 from blockus import blockus_state
 from blockus.joueur import player
+from tqdm import tqdm
 import numpy as np
 
 class player_MinMax(player):
@@ -17,7 +18,7 @@ class player_MinMax(player):
         On trie les états en fonction de leur valeur.
         '''
         next_states = state.next_states
-        next_states.sort(key=lambda x: self.state_evaluation(x),reverse=True)
+        next_states.sort(key=lambda x: self.heuristic(x,self.maximizing_player, self.minimizing_player),reverse=True)
         return next_states
     
     
@@ -26,14 +27,14 @@ class player_MinMax(player):
         Fonction MaxValue de l'algorithme MinMax.
         Récupérer la valeur maximale pour un noeud.
         '''
-        next_states = state.next_states
-        
-        if state.is_terminal() or depth == 0:
+        if state.is_final() or depth == 0:
             return self.heuristic(state, self.maximizing_player, self.minimizing_player)
+        
+        next_states = state.next_states
         
         value = -2147483647
         
-        next_states = self.trie_elagage(state)
+        # next_states = self.trie_elagage(state)
         
         for possible_move in next_states:
             value = max(value, self.MinValue(possible_move, depth - 1, alpha, beta))
@@ -48,18 +49,21 @@ class player_MinMax(player):
         Fonction MinValue de l'algorithme MinMax.
         Récupérer la valeur minimale pour un noeud.
         '''
-        next_states = state.next_states
         
-        if state.is_terminal() or depth == 0:
+        if state.is_final() or depth == 0:
             return self.heuristic(state, self.maximizing_player, self.minimizing_player)
+        
+        next_states = state.next_states
         
         value = 2147483647
         
-        next_states = self.trie_elagage(state)
+        # next_states = self.trie_elagage(state)
         
         for possible_move in next_states:
             value = min(value, self.MaxValue(possible_move, depth - 1, alpha, beta))
             beta = min(beta, value)
+            if beta <= alpha:
+                break
             
         return value
     
@@ -69,7 +73,7 @@ class player_MinMax(player):
         Récupérer le meilleur coup à jouer.
         Contient l'élagage alpha-beta.
         '''
-        next_states = state.next_states()
+        next_states = state.next_states
         value = -float('inf')
         best_move = None
         
@@ -80,45 +84,16 @@ class player_MinMax(player):
         alpha = -2147483647
         beta = 2147483647
         
-        next_states = self.trie_elagage(state)
+        # next_states = self.trie_elagage(state)
         
-        for i, possible_move in enumerate(next_states):
+        for i, possible_move in tqdm(enumerate(next_states), total=len(next_states), desc="MinMax"):
             max_value = self.MinValue(possible_move, self.depth, alpha, beta)
             alpha = max(alpha, max_value)
             if max_value > value:
                 value = max_value
                 best_move = possible_move
         
-        return best_move
-
-    
-
-
-def heuristicV1(state: blockus_state, maximizing_player, minimizing_player) -> int:
-        '''
-        Première heuristique de l'algorithme MinMax.
-        On regarde les pièces du joueur courant.
-        Plus il y a de pièces non posèes qui ont de la "valeur", plus la valeur de l'état est petit.
-        La valeur d'une pièce est représenté par le nombre de case qu'elle occupe et le nombre de possibilités de placement qu'elle offre.
-        '''
-        eval = 0
-        maximizing_player_pieces = state.player_pieces[maximizing_player]
-        minimizing_player_pieces = state.player_pieces[minimizing_player]
-        for piece in maximizing_player_pieces:
-            for masks in piece.liste_masks:
-                nb_cube = np.sum(masks[0])  # nombre de cases occupées par la pièce
-                nb_diag = np.sum(masks[2])  # nombre de possibilités de placement d'une prochaine pièce 
-                eval = eval - nb_cube - nb_diag
+        # oublie des etats suivants pour liberer de la memoire
+        state.forge_next_states()
         
-        for piece in minimizing_player_pieces:
-            for masks in piece.liste_masks:
-                nb_cube = np.sum(masks[0])   
-                nb_diag = np.sum(masks[2])
-                eval = eval + nb_cube + nb_diag
-                
-        '''
-        On pourrait pré-calculer le nombre de case qu'occupe chaque pièce
-        et le nombre de possibilités de placement qu'elle offre,
-        directement dans la classe pièce comme des attributs.
-        '''
-        return eval  
+        return best_move

@@ -1,1 +1,1 @@
-from player_MonteCarlo import player_MonteCarlo
+from MonteCarlo.player_MonteCarlo import player_MonteCarlo

@@ -2,7 +2,22 @@ import numpy as np
 import random
 from blockus import blockus_state
 from blockus.joueur import player
-from __future__ import annotations
+
+class Node:
+    def __init__(self, state: blockus_state, parent=None):
+        self.state = state
+        self.parent = parent
+        self.childrens:list[Node] = []
+        self.untried_actions:list[blockus_state] = state.next_states
+        self.visits = 0
+        self.wins = 0
+    
+    def is_terminal(self):
+        return self.state.is_final()
+    
+    def is_leaf(self):
+        return len(self.untried_actions) == 0
+
 class player_MonteCarlo(player):
     '''
     Classe représentant un joueur MinMax.
@@ -96,19 +111,6 @@ class player_MonteCarlo(player):
             
         
 
-class Node:
-    def __init__(self, state: blockus_state, parent=None):
-        self.state = state
-        self.parent = parent
-        self.childrens:list[Node] = []
-        self.untried_actions:list[blockus_state] = state.next_states
-        self.visits = 0
-        self.wins = 0
-    
-    def is_terminal(self):
-        return self.state.is_final()
-    
-    def is_leaf(self):
-        return len(self.untried_actions) == 0
+
     
         
