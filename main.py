@@ -32,18 +32,17 @@ players = [player1, player2]
 
 # Création du plateau de jeu
 
-blockus = blockus.Blockus(WIDTH,HEIGHT,players,pieces)
+game = blockus(WIDTH,HEIGHT,players,pieces)
 
 
 '''
 Tour de jeu
 '''
 
-while not blockus.current_state.is_terminal():
+while not game.current_state.is_final():
     # Affichage de l'état du jeu
-    print(blockus.current_state)
-    
-    blockus.play_turn()
+    print(game.current_state)
+    game.play_turn()
     
 
 # Calcul du score
