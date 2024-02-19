@@ -148,9 +148,9 @@ class blockus_state():
         return 1 if score > 0 else -1 if score < 0 else 0
     
     def __str__(self) -> str:
-        J1_CHAR = '\u2588\u2588'
-        J2_CHAR = '\u2592\u2592'
-        EMPTY_CHAR = '\u257A\u2578'
+        J1_CHAR = '🟥'
+        J2_CHAR = '🟦'
+        EMPTY_CHAR = '⬜'
         
         board = np.full((self.height, self.width), EMPTY_CHAR)
         board[self.players_mask[0][1:-1, 1:-1]] = J1_CHAR
