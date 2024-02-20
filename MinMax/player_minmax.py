@@ -94,6 +94,6 @@ class player_MinMax(player):
                 best_move = possible_move
         
         # oublie des etats suivants pour liberer de la memoire
-        state.forge_next_states()
+        # state.forget_next_states()
         
         return best_move

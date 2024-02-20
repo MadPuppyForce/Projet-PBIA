@@ -7,8 +7,8 @@ import os
 '''
 Constantes
 '''
-WIDTH = 10  # largeur du plateau de jeu
-HEIGHT = 10 # hauteur du plateau de jeu
+WIDTH = 14  # largeur du plateau de jeu
+HEIGHT = 14 # hauteur du plateau de jeu
 
 
 '''
@@ -23,8 +23,10 @@ for file in os.listdir("pieces"):
 
 # creation des joueurs
 # player1 = joueur.player_random()
-player1 = player_MinMax(3, heuristics.heuristicV1)
-player2 = joueur.player_random()
+# player1 = player_MinMax(3, heuristics.heuristicV1)
+player1 = player_MonteCarlo(1000, 120, 1)
+# player2 = joueur.player_random()
+player2 = player_MinMax(2, heuristics.heuristicV1)
 
 players = [player1, player2]
 
@@ -57,7 +59,14 @@ print("\nTour ", turn, " - Joueur ", game.current_state.player_turn + 1)
 print("Nombre de pièces restantes : j1 -> ", nb_pieces_j1, " / j2 -> ", nb_pieces_j2)
 print(game.current_state)
 
-
 # Calcul du score
-score = game.current_state.result()
-print("Score final : ", score)
+# result = game.current_state.result()
+score = game.current_state.score()
+
+print("Score final : j1", score[0], "- j2", score[1])
+if score[0] > score[1]:
+    print("Joueur 1 gagne")
+elif score[0] < score[1]:
+    print("Joueur 2 gagne")
+else:
+    print("Match nul")

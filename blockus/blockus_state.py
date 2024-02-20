@@ -61,8 +61,9 @@ class blockus_state():
     def nb_coups(self, value):
         raise AttributeError("You can't set attribute next_states")  
     
-    def forge_next_states(self):
+    def forget_next_states(self):
         self._next_states = None
+        self._nb_coups = None
     
     def __get_next_state(self, piece:piece, mask_piece, coord) -> blockus_state:
         '''
@@ -149,6 +150,12 @@ class blockus_state():
         score = np.sum(self.players_mask[0]) - np.sum(self.players_mask[1])
         
         return 1 if score > 0 else -1 if score < 0 else 0
+    
+    def score(self) -> tuple[int, int]:
+        '''
+        Retourne le score du jeu
+        '''
+        return (np.sum(self.players_mask[0]), np.sum(self.players_mask[1]))
     
     def __str__(self) -> str:
         J1_CHAR = '🟥'
