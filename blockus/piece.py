@@ -45,8 +45,8 @@ class piece:
     
     def __generer_config(self,mask) -> list:
         rotations = [np.rot90(mask, k=i) for i in range(4)]
-        flipped_rotations = [np.flip(rot,0) for rot in rotations]
-        configs = rotations + flipped_rotations
+        # flipped_rotations = [np.flip(rot,0) for rot in rotations]
+        configs = rotations # + flipped_rotations
         config_unique= []
         for config in configs:
             if not any(np.array_equal(config, unique) for unique in config_unique):

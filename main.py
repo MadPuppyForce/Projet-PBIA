@@ -7,8 +7,8 @@ import os
 '''
 Constantes
 '''
-WIDTH = 14  # largeur du plateau de jeu
-HEIGHT = 14 # hauteur du plateau de jeu
+WIDTH = 12  # largeur du plateau de jeu
+HEIGHT = 12 # hauteur du plateau de jeu
 
 
 '''
@@ -22,11 +22,11 @@ for file in os.listdir("pieces"):
 
 
 # creation des joueurs
-# player1 = joueur.player_random()
+player1 = joueur.player_random()
 # player1 = player_MinMax(3, heuristics.heuristicV1)
-player1 = player_MonteCarlo(1000, 120, 1)
+# player1 = player_MonteCarlo(1000, 120, 1)
 # player2 = joueur.player_random()
-player2 = player_MinMax(2, heuristics.heuristicV1)
+player2 = player_MinMax(4, heuristics.heuristicV1)
 
 players = [player1, player2]
 
