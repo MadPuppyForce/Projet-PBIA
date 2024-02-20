@@ -57,7 +57,8 @@ class player_MonteCarlo(player):
             
             # si la limite de temps est atteinte, on arrete
             if time.time() - start_time > self.T_max:
-                tqdm.write("Temps écoulé")
+                if self.verbose:
+                    tqdm.write("Temps écoulé")
                 break
         
         # selection du meilleur coup

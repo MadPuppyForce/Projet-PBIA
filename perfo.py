@@ -24,9 +24,9 @@ for file in os.listdir("pieces"):
     pieces.append(piece.charger_piece("pieces/" + file))
 
 # creation des joueurs
-player1 = joueur.player_random()
+# player1 = joueur.player_random()
 # player1 = player_MinMax(3, heuristics.heuristicV1)
-# player1 = player_MonteCarlo(1000, 120, 1)
+player1 = player_MonteCarlo(1000, 20, 1)
 player2 = joueur.player_random()
 # player2 = player_MinMax(3, heuristics.heuristicV1)
 
