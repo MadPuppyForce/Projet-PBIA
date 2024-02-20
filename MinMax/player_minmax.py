@@ -7,9 +7,10 @@ class player_MinMax(player):
     '''
     Classe représentant un joueur MinMax.
     '''
-    def __init__(self, depth, heuristic):
+    def __init__(self, depth, heuristic, verbose=False):
         self.depth = depth
         self.heuristic = heuristic
+        self.verbose = verbose
         
     
     def trie_elagage(self, state: blockus_state) -> list:
@@ -86,7 +87,8 @@ class player_MinMax(player):
         
         # next_states = self.trie_elagage(state)
         
-        for i, possible_move in tqdm(enumerate(next_states), total=len(next_states), desc="MinMax"):
+        for i, possible_move in tqdm(enumerate(next_states), total=len(next_states), desc="MinMax") if self.verbose else enumerate(next_states):
+            
             max_value = self.MinValue(possible_move, self.depth, alpha, beta)
             alpha = max(alpha, max_value)
             if max_value > value:

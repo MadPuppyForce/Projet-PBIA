@@ -23,10 +23,11 @@ class player_MonteCarlo(player):
     '''
     Classe représentant un joueur MinMax.
     '''
-    def __init__(self, N_max, T_max, c):
+    def __init__(self, N_max, T_max, c, verbose=False):
         self.c = c
         self.N_max = N_max
         self.T_max = T_max
+        self.verbose = verbose
     
     def play(self, state: blockus_state) -> blockus_state:
         
@@ -35,7 +36,7 @@ class player_MonteCarlo(player):
         start_time = time.time()
         
         # algorithme de Monte Carlo
-        for _ in trange(self.N_max, desc="Monte Carlo"):
+        for _ in trange(self.N_max, desc="Monte Carlo") if self.verbose else range(self.N_max):
             node = root
             # selection
             node = self.selection(node)
