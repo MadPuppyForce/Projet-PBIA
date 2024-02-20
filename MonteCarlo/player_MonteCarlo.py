@@ -69,7 +69,7 @@ class player_MonteCarlo(player):
                 best_node = child
         
         # oubli des autres etats pour liberer de la memoire
-        state.forge_next_states()
+        state.forget_next_states()
         
         return best_node.state
     
