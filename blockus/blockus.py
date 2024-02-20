@@ -1,4 +1,5 @@
 import numpy as np
+import random
 from blockus.blockus_state import blockus_state
 from blockus.piece import piece
 from blockus.joueur import player
@@ -30,6 +31,13 @@ class blockus:
         '''
         current_player = self.players[self.current_state.player_turn]
         next_state = current_player.play(self.current_state)
+        self.current_state = next_state
+    
+    def play_turn_random(self):
+        '''
+        Joue un tour de jeu aléatoirement
+        '''
+        next_state = random.choice(self.current_state.next_states)
         self.current_state = next_state
     
     def reset(self):

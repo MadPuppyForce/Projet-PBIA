@@ -23,10 +23,10 @@ for file in os.listdir("pieces"):
 
 # creation des joueurs
 player1 = joueur.player_random()
-# player1 = player_MinMax(3, heuristics.heuristicV1)
-# player1 = player_MonteCarlo(1000, 120, 1)
+# player1 = player_MinMax(3, heuristics.heuristicV1, verbose=True)
+# player1 = player_MonteCarlo(1000, 120, 1, verbose=True)
 # player2 = joueur.player_random()
-player2 = player_MinMax(4, heuristics.heuristicV1)
+player2 = player_MinMax(3, heuristics.heuristicV1, verbose=True)
 
 players = [player1, player2]
 
