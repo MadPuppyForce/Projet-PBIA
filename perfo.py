@@ -12,7 +12,7 @@ WIDTH = 12  # largeur du plateau de jeu
 HEIGHT = 12 # hauteur du plateau de jeu
 
 
-N = 1000 # nombre de parties a simuler
+N = 50 # nombre de parties a simuler
 
 nb_coups_aleatoires = 6
 '''
@@ -53,4 +53,4 @@ for _ in trange(N, desc="Parties"):
     else:
         resultats[2] += 1
     
-print("Résultats : ", resultats)
+print("Résultats (nb_victoires_j1, nb_victoires_j2, nb_match_nul): ", resultats)
