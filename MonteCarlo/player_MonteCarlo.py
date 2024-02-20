@@ -83,7 +83,7 @@ class player_MonteCarlo(player):
             for child in selected.childrens:
                 if child.visits == 0:
                     return child
-                uct = (child.wins / child.visits) + self.c * np.sqrt(selected.visits / child.visits)
+                uct = (child.wins / child.visits) + self.c * np.sqrt(np.log(selected.visits) / child.visits)
                 if uct > best_uct:
                     best_uct = uct
                     next_node = child
