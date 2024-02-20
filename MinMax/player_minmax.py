@@ -6,6 +6,8 @@ import numpy as np
 class player_MinMax(player):
     '''
     Classe représentant un joueur MinMax.
+        :param depth: profondeur de recherche
+        :param heuristic: fonction heuristique
     '''
     def __init__(self, depth, heuristic, verbose=False):
         self.depth = depth

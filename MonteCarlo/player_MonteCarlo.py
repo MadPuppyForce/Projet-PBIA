@@ -22,6 +22,9 @@ class Node:
 class player_MonteCarlo(player):
     '''
     Classe représentant un joueur MinMax.
+        :param N_max: nombre de simulations à effectuer
+        :param T_max: temps maximum de calcul (en secondes)
+        :param c: constante pour l'exploration
     '''
     def __init__(self, N_max, T_max, c, verbose=False):
         self.c = c
