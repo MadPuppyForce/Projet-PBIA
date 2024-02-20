@@ -20,7 +20,7 @@ class blockus:
                             ne peuvent pas se toucher. Les pièces de même couleur peuvent se toucher par les côtés."
         
         self.players = players
-        
+        self.pieces = pieces
         # initialisation du jeu
         self.current_state = blockus_state(width, height, [pieces.copy(), pieces.copy()])
     
@@ -36,4 +36,5 @@ class blockus:
         '''
         Reinitialise le jeu
         '''
-        self.current_state = blockus_state(self.current_state.width, self.current_state.height)
+        self.current_state = blockus_state(self.current_state.width, self.current_state.height, \
+            [self.pieces.copy(), self.pieces.copy()])
