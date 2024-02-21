@@ -25,9 +25,9 @@ for file in os.listdir("pieces"):
 #player1 = joueur.player_random()
 #player1 = player_MinMax(3, heuristics.heuristicV1, verbose=True)
 #player1 = player_MonteCarlo(1000, 120, 1, verbose=True)
-player1 = player_MinMax(2, heuristics.heuristicV2, verbose=True)
+player1 = player_MinMax(2, heuristics.heuristicV1, verbose=True)
 #player2 = joueur.player_random()
-player2 = player_MinMax(2, heuristics.heuristicV1, verbose=True)
+player2 = player_MinMax(2, heuristics.heuristicV2, verbose=True)
 
 players = [player1, player2]
 
