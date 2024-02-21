@@ -1,5 +1,5 @@
 from blockus import piece, blockus, joueur
-from MinMax import player_minmax, heuristics
+from MinMax import player_MinMax, heuristics
 from MonteCarlo import player_MonteCarlo
 import numpy as np
 import os
@@ -22,12 +22,12 @@ for file in os.listdir("pieces"):
 
 
 # creation des joueurs
-player1 = joueur.player_random()
-# player1 = player_MinMax(3, heuristics.heuristicV1, verbose=True)
-# player1 = player_MonteCarlo(1000, 120, 1, verbose=True)
-#player1 = player_minmax(2, heuristics.heuristicV2, verbose=True)
-player2 = joueur.player_random()
-#player2 = player_minmax(2, heuristics.heuristicV1, verbose=True)
+#player1 = joueur.player_random()
+#player1 = player_MinMax(3, heuristics.heuristicV1, verbose=True)
+#player1 = player_MonteCarlo(1000, 120, 1, verbose=True)
+player1 = player_MinMax(2, heuristics.heuristicV2, verbose=True)
+#player2 = joueur.player_random()
+player2 = player_MinMax(2, heuristics.heuristicV1, verbose=True)
 
 players = [player1, player2]
 

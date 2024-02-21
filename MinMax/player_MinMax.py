@@ -22,12 +22,13 @@ class player_MinMax(player):
         Sur un noeud maximisant, on trie les états en ordre décroissant.
         Sur un noeud minimisant, on trie les états en ordre croissant.
         '''
+        
+        
         next_states = state.next_states
         
-        if maximisant:
-            next_states.sort(key=lambda x: self.heuristic(x,self.maximizing_player, self.minimizing_player),reverse=True)
-        else:
-            next_states.sort(key=lambda x: self.heuristic(x,self.maximizing_player, self.minimizing_player),reverse=False)
+        next_states.sort(key=lambda x: self.heuristic(x,self.maximizing_player, self.minimizing_player),reverse=maximisant)
+        
+
         return next_states
     
     
@@ -43,7 +44,8 @@ class player_MinMax(player):
         
         value = -2147483647
         
-        # next_states = self.trie_elagage(state)
+        if 1 < depth:
+            next_states = self.trie_elagage(state, True)
         
         for possible_move in next_states:
             value = max(value, self.MinValue(possible_move, depth - 1, alpha, beta))
@@ -66,7 +68,8 @@ class player_MinMax(player):
         
         value = 2147483647
         
-        # next_states = self.trie_elagage(state)
+        if 1 < depth:
+            next_states = self.trie_elagage(state, False)
         
         for possible_move in next_states:
             value = min(value, self.MaxValue(possible_move, depth - 1, alpha, beta))
