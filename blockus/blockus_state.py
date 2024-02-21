@@ -18,13 +18,12 @@ class blockus_state():
         self.player_pieces = player_pieces
         
         # initialisation des masques des joueurs
-        if players_mask == None: # initialisation des masques des joueurs si non fournis
-            self.players_mask = [np.zeros((height+2, width+2), dtype=bool), np.zeros((height+2, width+2), dtype=bool)]
-            self.players_mask[0][ 0, 0] = True
-            self.players_mask[1][-1,-1] = True
-        else:
-            self.players_mask = players_mask
-            
+        if players_mask is None: # initialisation des masques des joueurs si non fournis
+            players_mask = [np.zeros((height+2, width+2), dtype=bool), np.zeros((height+2, width+2), dtype=bool)]
+            players_mask[0][ 0, 0] = True
+            players_mask[1][-1,-1] = True
+        self.players_mask = players_mask
+        
         self.player_turn = player_turn
         self.previous_state = previous_state if previous_state != None else self
         self._next_states = None
@@ -65,7 +64,7 @@ class blockus_state():
         self._next_states = None
         self._nb_coups = None
     
-    def __get_next_state(self, piece:piece, mask_piece, coord) -> blockus_state:
+    def __get_next_state(self, ind_piece, mask_piece, coord) -> blockus_state:
         '''
         Retourne le nouvel etat du jeu apres avoir joue la piece aux coordonnees donnees
         '''
@@ -82,7 +81,7 @@ class blockus_state():
         
         # mise a jour des pieces
         next_player_pieces = [self.player_pieces[0].copy(), self.player_pieces[1].copy()]
-        next_player_pieces[current_player].remove(piece)
+        next_player_pieces[current_player].pop(ind_piece)
         
         # creation du nouvel etat
         next_state = blockus_state(self.width, self.height, next_player_pieces, next_players_mask, next_player_turn, self)
@@ -95,13 +94,13 @@ class blockus_state():
         '''
         next_states = []
         current_player_pieces = self.player_pieces[self.player_turn]
-        for piece in current_player_pieces:
+        for ind_piece, piece in enumerate(current_player_pieces):
             for masks in piece.liste_masks:
                 h_mask, w_mask = masks[0].shape
                 for j in range(self.width - w_mask + 1):
                     for i in range(self.height - h_mask + 1):
-                        if self.__is_valid(masks, (i, j)):
-                            next_state = self.__get_next_state(piece, masks[0], (i, j))
+                        if (not self.mask_board[i+1,j+1]) and self.__is_valid(masks, (i, j)):
+                            next_state = self.__get_next_state(ind_piece, masks[0], (i, j))
                             next_states.append(next_state)
         
         self._nb_coups = len(next_states)
