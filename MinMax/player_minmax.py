@@ -15,13 +15,19 @@ class player_MinMax(player):
         self.verbose = verbose
         
     
-    def trie_elagage(self, state: blockus_state) -> list:
+    def trie_elagage(self, state: blockus_state,maximisant: bool) -> list:
         '''
         Fonction de tri des états pour l'élagage alpha-beta.
         On trie les états en fonction de leur valeur.
+        Sur un noeud maximisant, on trie les états en ordre décroissant.
+        Sur un noeud minimisant, on trie les états en ordre croissant.
         '''
         next_states = state.next_states
-        next_states.sort(key=lambda x: self.heuristic(x,self.maximizing_player, self.minimizing_player),reverse=True)
+        
+        if maximisant:
+            next_states.sort(key=lambda x: self.heuristic(x,self.maximizing_player, self.minimizing_player),reverse=True)
+        else:
+            next_states.sort(key=lambda x: self.heuristic(x,self.maximizing_player, self.minimizing_player),reverse=False)
         return next_states
     
     
