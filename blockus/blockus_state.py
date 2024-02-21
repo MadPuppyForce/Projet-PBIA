@@ -12,7 +12,7 @@ class blockus_state():
         :param player_turn: joueur dont c'est le tour de jouer
         :param previous_state: etat precedent
     '''
-    def __init__(self, width, height, player_pieces:list[piece], players_mask=None, player_turn=0, previous_state=None):
+    def __init__(self, width, height, player_pieces:list[piece], players_mask=None, player_turn=0, previous_state=None, nb_tour=0):
         self.width = width
         self.height = height
         self.player_pieces = player_pieces
@@ -24,6 +24,7 @@ class blockus_state():
             players_mask[1][-1,-1] = True
         self.players_mask = players_mask
         
+        self.nb_tour = nb_tour
         self.player_turn = player_turn
         self.previous_state = previous_state if previous_state != None else self
         self._next_states = None
@@ -84,7 +85,7 @@ class blockus_state():
         next_player_pieces[current_player].pop(ind_piece)
         
         # creation du nouvel etat
-        next_state = blockus_state(self.width, self.height, next_player_pieces, next_players_mask, next_player_turn, self)
+        next_state = blockus_state(self.width, self.height, next_player_pieces, next_players_mask, next_player_turn, self, self.nb_tour+1)
         
         return next_state
         
@@ -92,17 +93,29 @@ class blockus_state():
         '''
         Calcule les etats suivants
         '''
+        
+        if self.nb_tour <= 1:
+            possible_position = np.full((self.height, self.width), True)
+        else:
+            possible_position = self.previous_state.previous_state.next_possible_position
+        
         next_states = []
         current_player_pieces = self.player_pieces[self.player_turn]
+        next_possible_position = np.full((self.height, self.width), False)
         for ind_piece, piece in enumerate(current_player_pieces):
             for masks in piece.liste_masks:
                 h_mask, w_mask = masks[0].shape
                 for j in range(self.width - w_mask + 1):
                     for i in range(self.height - h_mask + 1):
-                        if (not self.mask_board[i+1,j+1]) and self.__is_valid(masks, (i, j)):
-                            next_state = self.__get_next_state(ind_piece, masks[0], (i, j))
-                            next_states.append(next_state)
+                        if (possible_position[i,j]):
+                            valid = self.__is_valid(masks, (i, j))
+                            if valid[0]:
+                                next_state = self.__get_next_state(ind_piece, masks[0], (i, j))
+                                next_states.append(next_state)
+                            if valid[1]:
+                                next_possible_position[i,j] = True
         
+        self.next_possible_position = next_possible_position
         self._nb_coups = len(next_states)
         
         # si aucun coup possible et que le jeu n'est pas fini, on passe le tour du joueur courant
@@ -127,17 +140,17 @@ class blockus_state():
         
         # verification que les cases sont libres
         if np.any(mask_board[1+i:1+i+h_mask, 1+j:1+j+w_mask] & mask_piece):
-            return False
+            return False, False
         
         # verification que les cases adjacentes a la piece ne sont pas occupees par des pieces du joueur
         if np.any(mask_pieces_current_player[i:i+h_mask+2, j:j+w_mask+2] & mask_piece_adj):
-            return False
+            return False, False
         
         # verification que au moins une case dans une diagonale a la piece est occupee par une piece du joueur
         if not np.any(mask_pieces_current_player[i:i+h_mask+2, j:j+w_mask+2] & mask_piece_diag):
-            return False
+            return False, True
         
-        return True
+        return True, True
     
     def is_final(self) -> bool:
         return self.previous_state.nb_coups == 0 and self.nb_coups == 0
