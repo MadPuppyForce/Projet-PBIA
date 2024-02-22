@@ -23,3 +23,6 @@ class player_random(player):
         next_states = state.next_states
         next_state = next_states[np.random.randint(len(next_states))]
         return next_state
+    
+    def __str__(self):
+        return "Joueur aléatoire"

@@ -125,6 +125,9 @@ class player_MonteCarlo(player):
                 node.wins += 1
             
             node = node.parent
+    
+    def __str__(self):
+        return "Monte Carlo : N_max = " + str(self.N_max) + ", T_max = " + str(self.T_max) + ", c = " + str(self.c)
             
         
 

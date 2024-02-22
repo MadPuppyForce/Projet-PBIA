@@ -110,3 +110,6 @@ class player_MinMax(player):
         state.forget_next_states()
         
         return best_move
+
+    def __str__(self):
+        return "MinMax : depth = " + str(self.depth) + ", heuristic = " + self.heuristic.__name__
